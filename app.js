@@ -8,7 +8,6 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const routes = require('./routes');
-const api = require('./routes');
 
 /************************************************************************************
 Configuration
