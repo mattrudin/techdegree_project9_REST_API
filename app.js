@@ -1,19 +1,30 @@
 'use strict';
 
-// load modules
+/************************************************************************************
+Load modules
+************************************************************************************/
 const express = require('express');
-const morgan = require('morgan');
-
-// variable to enable global error logging
-const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
-
 // create the Express app
 const app = express();
+const morgan = require('morgan');
+const routes = require('./routes');
+const api = require('./routes');
 
+/************************************************************************************
+Configuration
+set and use functions
+************************************************************************************/
+// variable to enable global error logging
+const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
 
-// TODO setup your api routes here
+
+/************************************************************************************
+Implementing routes (located in ./routes)
+************************************************************************************/
+app.use(routes);
+
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
@@ -22,6 +33,10 @@ app.get('/', (req, res) => {
   });
 });
 
+
+/************************************************************************************
+Error handling
+************************************************************************************/
 // send 404 if no other route matched
 app.use((req, res) => {
   res.status(404).json({
@@ -41,6 +56,9 @@ app.use((err, req, res, next) => {
   });
 });
 
+/************************************************************************************
+Server setup
+************************************************************************************/
 // set our port
 app.set('port', process.env.PORT || 5000);
 
