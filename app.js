@@ -7,7 +7,8 @@ const express = require('express');
 // create the Express app
 const app = express();
 const morgan = require('morgan');
-const routes = require('./routes');
+const users = require('./routes/users');
+const courses = require('./routes/courses');
 
 /************************************************************************************
 Configuration
@@ -22,7 +23,8 @@ app.use(morgan('dev'));
 /************************************************************************************
 Implementing routes (located in ./routes)
 ************************************************************************************/
-app.use(routes);
+app.use('api/users', users);
+api.use('api/courses', courses);
 
 
 // setup a friendly greeting for the root route
