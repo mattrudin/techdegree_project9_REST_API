@@ -12,7 +12,6 @@ const users = require('./routes/users');
 const courses = require('./routes/courses');
 // Database setup
 const mongoose = require('mongoose');
-const { User, Course } = require('./models/models');
 const { connection } = mongoose;
 
 
@@ -35,22 +34,20 @@ set and use functions
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
-app.use(json());
 
 
 /************************************************************************************
 Implementing routes (located in ./routes)
 ************************************************************************************/
-app.use('api/users', users);
-app.use('api/courses', courses);
-
-
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to the REST API project!',
   });
 });
+
+app.use('/api/users', users);
+app.use('/api/courses', courses);
 
 
 /************************************************************************************

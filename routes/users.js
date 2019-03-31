@@ -6,21 +6,14 @@ const { User } = require('../models/models');
 api/users Routes
 ************************************************************************************/
 // GET /api/users 200 - Returns the currently authenticated user
-router.get('/', (req, res) => {
-    // TODO
+router.get('/', (req, res, next) => {
+    User.find({}).exec((error, user) => error ? next(error) : res.json(user))
 });
 
 // POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
-router.post('/', async (req, res) => {
-    const user = await User.create(req.body);
-    // Error checking  
-    const errors = user.validateSync();
-    if (!errors.isEmpty()) {
-        const errorMessages = errors.array().map(error => error.message);
-        return res.status(400).json({ errors: errorMessages });
-    }
-
-    res.status(201).end();
+router.post('/', (req, res, next) => {
+    const user = new User(req.body);
+    user.save((error, user) => error ? next(error) : res.status(201).end());
 })
 
 module.exports = router;
