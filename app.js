@@ -6,10 +6,27 @@ Load modules
 const express = require('express');
 // create the Express app
 const app = express();
+
 const morgan = require('morgan');
 const users = require('./routes/users');
 const courses = require('./routes/courses');
+// Database setup
+const mongoose = require('mongoose');
+const { User, Course } = require('./models/models');
+const { connection } = mongoose;
 
+
+/************************************************************************************
+Database configuration
+************************************************************************************/
+mongoose.connect('mongodb://localhost:27017/fsjstd-restapi',
+  { useNewUrlParser: true });
+
+connection.on('error', console.error.bind(console, 'Connection error:'));
+
+connection.once('open', () => {
+  console.log('DB connection successful');
+});
 /************************************************************************************
 Configuration
 set and use functions
@@ -24,7 +41,7 @@ app.use(morgan('dev'));
 Implementing routes (located in ./routes)
 ************************************************************************************/
 app.use('api/users', users);
-api.use('api/courses', courses);
+app.use('api/courses', courses);
 
 
 // setup a friendly greeting for the root route
