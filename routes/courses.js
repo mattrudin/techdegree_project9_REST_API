@@ -21,10 +21,29 @@ router.get('/:id', async (req, res, next) => {
     });
 });
 // POST /api/courses 201 - Creates a course, sets the Location header to the URI for the course, and returns no content
-
+router.post('/', async (req, res, next) => {
+    const courseToBeCreated = req.body;
+    const course = await Course.create(courseToBeCreated, (error) => {
+        if(error) return next(error);
+        res.status(201).end();
+    });
+})
 // PUT /api/courses/:id 204 - Updates a course and returns no content
-
+router.put('/:id', async (req, res, next) => {
+    const id = req.params.id;
+    const courseToBeUpdated = req.body;
+    const course = await Course.findByIdAndUpdate(id, req.body, (error) => {
+        if(error) return next(error);
+        res.status(204).end();
+    });
+})
 // DELETE /api/courses/:id 204 - Deletes a course and returns no content
-
+router.delete('/:id', async (req, res, next) => {
+    const id = req.params.id;
+    const course = await Course.findByIdAndDelete(id, (error) => {
+        if(error) return next(error);
+        res.status(204).end();
+    })
+})
 
 module.exports = router;
