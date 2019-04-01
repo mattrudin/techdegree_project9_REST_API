@@ -8,6 +8,7 @@ const express = require('express');
 const app = express();
 
 const morgan = require('morgan');
+const { json, urlencoded } = require('body-parser');
 const users = require('./routes/users');
 const courses = require('./routes/courses');
 // Database setup
@@ -34,6 +35,8 @@ set and use functions
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
+app.use(urlencoded({ extended: true }));
+app.use(json());
 
 
 /************************************************************************************
