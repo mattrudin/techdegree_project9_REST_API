@@ -31,7 +31,13 @@ router.get('/:id', async (req, res, next) => {
 });
 // POST /api/courses 201 - Creates a course, sets the Location header to the URI for the course, and returns no content
 router.post('/', authenticateUser, async (req, res, next) => {
+    // Get the course title, description (required) and the optional assets
     const courseToBeCreated = req.body;
+    // Get the current logged in user id
+    const loggedInUserID = req.currentUser._id;
+    // Set the coure user to the current logged in user
+    courseToBeCreated.user = loggedInUserID;
+    
     try {
         const course = await Course.create(courseToBeCreated);
         const courseID = course.id;
