@@ -41,6 +41,8 @@ router.post('/', async (req, res, next) => {
     userToBeCreated.password = bcryptjs.hashSync(userPassword);
     try {
         const user = await User.create(userToBeCreated);
+        // Set the response header to '/'
+        res.location('/');
         res.status(201).end();
     } catch (error) {
         next(error);

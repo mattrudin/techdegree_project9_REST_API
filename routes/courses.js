@@ -34,6 +34,9 @@ router.post('/', authenticateUser, async (req, res, next) => {
     const courseToBeCreated = req.body;
     try {
         const course = await Course.create(courseToBeCreated);
+        const courseID = course.id;
+        // Set the response header to '/:id'
+        res.location(`/${courseID}`);
         res.status(201).end();
     } catch (error) {
         next(error);
