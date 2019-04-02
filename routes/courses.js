@@ -37,7 +37,7 @@ router.post('/', authenticateUser, async (req, res, next) => {
     const loggedInUserID = req.currentUser._id;
     // Set the coure user to the current logged in user
     courseToBeCreated.user = loggedInUserID;
-    
+
     try {
         const course = await Course.create(courseToBeCreated);
         const courseID = course.id;
@@ -45,6 +45,9 @@ router.post('/', authenticateUser, async (req, res, next) => {
         res.location(`/${courseID}`);
         res.status(201).end();
     } catch (error) {
+        if(error.name === "ValidationError") {
+            return res.status(400).json({ error: error.message});
+        }
         next(error);
     }
 })
@@ -52,10 +55,14 @@ router.post('/', authenticateUser, async (req, res, next) => {
 router.put('/:id', authenticateUser, async (req, res, next) => {
     const courseId = req.params.id;
     const courseToBeUpdated = req.body;
+    const opts = { runValidators: true };
     try {
-        const course = await Course.findByIdAndUpdate(courseId, courseToBeUpdated);
+        const course = await Course.findByIdAndUpdate(courseId, courseToBeUpdated, opts);
         res.status(204).end();
     } catch (error) {
+        if(error.name === "ValidationError") {
+            return res.status(400).json({ error: error.message});
+        }
         next(error);
     }
 })
