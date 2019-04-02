@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const authenticateUser = require('../utility/auth');
 const { Course } = require('../models/models');
 
 /************************************************************************************
@@ -29,7 +30,7 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 // POST /api/courses 201 - Creates a course, sets the Location header to the URI for the course, and returns no content
-router.post('/', async (req, res, next) => {
+router.post('/', authenticateUser, async (req, res, next) => {
     const courseToBeCreated = req.body;
     try {
         const course = await Course.create(courseToBeCreated);
@@ -39,7 +40,7 @@ router.post('/', async (req, res, next) => {
     }
 })
 // PUT /api/courses/:id 204 - Updates a course and returns no content
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', authenticateUser, async (req, res, next) => {
     const courseId = req.params.id;
     const courseToBeUpdated = req.body;
     try {
@@ -50,7 +51,7 @@ router.put('/:id', async (req, res, next) => {
     }
 })
 // DELETE /api/courses/:id 204 - Deletes a course and returns no content
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', authenticateUser, async (req, res, next) => {
     const courseId = req.params.id;
     try {
         const course = await Course.findByIdAndDelete(courseId);
