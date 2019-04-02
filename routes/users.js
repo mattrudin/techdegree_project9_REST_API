@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcryptjs = require('bcryptjs');
 const { User } = require('../models/models');
 
 /************************************************************************************
@@ -19,6 +20,9 @@ router.get('/', async (req, res, next) => {
 // POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
 router.post('/', async (req, res, next) => {
     const userToBeCreated = req.body;
+    // Hash the user password
+    const userPassword = userToBeCreated.password;
+    userToBeCreated.password = bcryptjs.hashSync(userPassword);
     try {
         const user = await User.create(userToBeCreated);
         res.status(201).end();
