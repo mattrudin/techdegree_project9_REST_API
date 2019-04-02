@@ -2,16 +2,32 @@ const express = require('express');
 const router = express.Router();
 const bcryptjs = require('bcryptjs');
 const { User } = require('../models/models');
+const authenticateUser = require('../utility/auth');
 
 /************************************************************************************
 api/users Routes
 ************************************************************************************/
 // GET /api/users 200 - Returns the currently authenticated user
-router.get('/', async (req, res, next) => {
+router.get('/', authenticateUser, async (req, res, next) => {
+    const loggedInUser = req.currentUser;
+    const name = loggedInUser.emailAddress;
     try {
-        const user = await User.find({})
+        const user = await User.findOne({"emailAddress": name})
+            .lean()
             .exec();
             res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
+});
+
+// DEBUG FUNCTION FOR GETTING ALL USERS
+router.get('/all', async (req, res, next) => {
+    try {
+        const users = await User.find({})
+            .lean()
+            .exec();
+            res.status(200).json(users);
     } catch (error) {
         next(error);
     }
