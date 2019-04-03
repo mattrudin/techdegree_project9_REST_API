@@ -3,11 +3,16 @@ const auth = require('basic-auth');
 const bcryptjs = require('bcryptjs');
 const { User } = require('../models/models');
 
+/************************************************************************************
+Authentication middleware
+************************************************************************************/
 const authenticateUser = async (req, res, next) => {
-    // Get the credentials from the users authorization header
     let errorMessage = null;
     let user = null;
+    // Get the credentials from the users authorization header
     const credentials = auth(req);
+
+    // Check if the user is available in the database
     if(credentials) {
         const name = credentials.name;
         try {
@@ -19,6 +24,7 @@ const authenticateUser = async (req, res, next) => {
         }
 
         if(user) {
+            // Check the user password
             const authenticated = bcryptjs.compareSync(credentials.pass, user.password);
             if(authenticated) {
                 console.log(`Authentication successful for name: ${user.emailAddress}`);
@@ -33,6 +39,7 @@ const authenticateUser = async (req, res, next) => {
         errorMessage = `Auth header not found`;
     }
 
+    // If an error occures, refuse access
     if(errorMessage) {
         console.warn(errorMessage);
         res.status(401).json({ message: 'Access Denied'});
@@ -41,4 +48,7 @@ const authenticateUser = async (req, res, next) => {
     }
 };
 
+/************************************************************************************
+Export middleware
+************************************************************************************/
 module.exports = authenticateUser;

@@ -9,26 +9,18 @@ api/users Routes
 ************************************************************************************/
 // GET /api/users 200 - Returns the currently authenticated user
 router.get('/', authenticateUser, async (req, res, next) => {
+    // Get the user information from the request
     const loggedInUser = req.currentUser;
     const name = loggedInUser.emailAddress;
     try {
+        // Check if the user is available in the database
         const user = await User.findOne({"emailAddress": name})
             .lean()
             .exec();
+            // Return the authenticated user
             res.status(200).json(user);
     } catch (error) {
-        next(error);
-    }
-});
-
-// DEBUG FUNCTION FOR GETTING ALL USERS
-router.get('/all', async (req, res, next) => {
-    try {
-        const users = await User.find({})
-            .lean()
-            .exec();
-            res.status(200).json(users);
-    } catch (error) {
+        // Throw error
         next(error);
     }
 });
@@ -40,16 +32,24 @@ router.post('/', async (req, res, next) => {
     const userPassword = userToBeCreated.password;
     userToBeCreated.password = bcryptjs.hashSync(userPassword);
     try {
+        // Create the user in the database
         const user = await User.create(userToBeCreated);
         // Set the response header to '/'
         res.location('/');
+        // Return nothing
         res.status(201).end();
     } catch (error) {
+        // Throw validation error
         if(error.name === "ValidationError") {
             return res.status(400).json({ error: error.message});
         }
+        // Throw error
         next(error);
     }
 })
 
+
+/************************************************************************************
+Export route
+************************************************************************************/
 module.exports = router;

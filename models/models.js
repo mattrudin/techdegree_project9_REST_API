@@ -42,10 +42,15 @@ const CourseSchema = new Schema({
     materialsNeeded: String,
 });
 
+
+/************************************************************************************
+Create model from schema
+************************************************************************************/
 const User = mongoose.model('User', UserSchema);
 const Course = mongoose.model('Course', CourseSchema);
 
+
 /************************************************************************************
-Export schemas
+Export models
 ************************************************************************************/
 module.exports = { User, Course };

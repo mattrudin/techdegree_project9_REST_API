@@ -4,13 +4,13 @@
 Load modules
 ************************************************************************************/
 const express = require('express');
-// create the Express app
 const app = express();
 
 const morgan = require('morgan');
 const { json, urlencoded } = require('body-parser');
 const users = require('./routes/users');
 const courses = require('./routes/courses');
+
 // Database setup
 const mongoose = require('mongoose');
 const { connection } = mongoose;
@@ -27,14 +27,19 @@ connection.on('error', console.error.bind(console, 'Connection error:'));
 connection.once('open', () => {
   console.log('DB connection successful');
 });
+
+
 /************************************************************************************
 Configuration
 set and use functions
 ************************************************************************************/
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
+
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
+
+// Setup body-parser
 app.use(urlencoded({ extended: true }));
 app.use(json());
 
@@ -49,6 +54,7 @@ app.get('/', (req, res) => {
   });
 });
 
+// Route integration
 app.use('/api/users', users);
 app.use('/api/courses', courses);
 
