@@ -12,6 +12,8 @@ router.get('/', async (req, res, next) => {
         // Get all courses from the database
         const course = await Course.find({})
             .lean()
+            // Return only the firstName and lastName of the given user
+            .populate("user", "firstName lastName")
             .exec();
         // Return all available courses
         res.status(200).json(course);
@@ -27,6 +29,8 @@ router.get('/:id', async (req, res, next) => {
         // Get the specified courses from the database
         const course = await Course.findById(courseId)
             .lean()
+            // Return only the firstName and lastName of the given user
+            .populate("user", "firstName lastName")
             .exec();
         // Return the course
         res.status(200).json(course);
