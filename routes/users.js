@@ -27,17 +27,24 @@ router.get('/', authenticateUser, async (req, res, next) => {
 
 // POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
 router.post('/', async (req, res, next) => {
-    const userToBeCreated = req.body;
-    // Hash the user password
-    const userPassword = userToBeCreated.password;
-    userToBeCreated.password = bcryptjs.hashSync(userPassword);
     try {
-        // Create the user in the database
-        const user = await User.create(userToBeCreated);
-        // Set the response header to '/'
-        res.location('/');
-        // Return nothing
-        res.status(201).end();
+        const userToBeCreated = req.body;
+        const userPassword = userToBeCreated.password;
+        // Check if the user provided a password
+        if(userPassword) {
+            // Hash the user password
+            userToBeCreated.password = bcryptjs.hashSync(userPassword);
+            // Create the user in the database
+            const user = await User.create(userToBeCreated);
+            // Set the response header to '/'
+            res.location('/');
+            // Return nothing
+            res.status(201).end();
+        } else {
+            const error = new Error("User validation failed: password is required.");
+            error.name = "ValidationError";
+            throw error;
+        }
     } catch (error) {
         // Throw validation error
         if(error.name === "ValidationError") {
