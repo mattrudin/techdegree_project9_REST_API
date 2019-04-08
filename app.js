@@ -5,11 +5,14 @@ Load modules
 ************************************************************************************/
 const express = require('express');
 const app = express();
+const cors = require('cors');
 
 const morgan = require('morgan');
 const { json, urlencoded } = require('body-parser');
 const users = require('./routes/users');
 const courses = require('./routes/courses');
+//CORS options
+const corsOptions = require('./utility/corsOptions');
 
 // Database setup
 const mongoose = require('mongoose');
@@ -28,6 +31,11 @@ connection.once('open', () => {
   console.log('DB connection successful');
 });
 
+
+/************************************************************************************
+CORS configuration
+************************************************************************************/
+app.use(cors(corsOptions))
 
 /************************************************************************************
 Configuration
